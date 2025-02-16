@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:restourantapp/model/tourism.dart';
+import 'package:restourantapp/data/api_service.dart';
 import 'package:restourantapp/provider/detail/bookmark_list_provider.dart';
+import 'package:restourantapp/provider/detail/tourism_detail_provider.dart';
+import 'package:restourantapp/provider/home/tourism_list_provider.dart';
 import 'package:restourantapp/provider/index_nav_provider.dart';
 import 'package:restourantapp/screen/detail/detail_screen.dart';
 import 'package:restourantapp/screen/main/main_screen.dart';
@@ -18,6 +20,19 @@ void main() {
        ChangeNotifierProvider(
          create: (context) => BookmarkListProvider(),
        ),
+       Provider(
+           create: (context) => ApiServices()
+       ),
+       ChangeNotifierProvider(
+           create: (context) => TourismListProvider(
+             context.read<ApiServices>(),
+           )
+       ),
+       ChangeNotifierProvider(
+           create: (context) => TourismDetailProvider(
+             context.read<ApiServices>(),
+           )
+       )
      ],
      child: const MyApp(),
    ),
@@ -38,7 +53,7 @@ class MyApp extends StatelessWidget {
       routes: {
         NavigationRoute.mainRoute.name: (context) => const MainScreen(),
         NavigationRoute.detailRoute.name: (context) => DetailScreen(
-              tourism: ModalRoute.of(context)?.settings.arguments as Tourism,
+              tourismId: ModalRoute.of(context)?.settings.arguments as int,
             )
       },
     );
